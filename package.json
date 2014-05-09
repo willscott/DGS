@@ -1,0 +1,7 @@
+{
+  "name": "DGS",
+  "description": "The DNS Golden Standard: A DNS server aiming to return all acceptable IPs for a query",
+  "dependencies": {
+    "native-dns": "^0.6.1"
+  }
+}
