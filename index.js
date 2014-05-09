@@ -1,4 +1,5 @@
 var dns = require('native-dns'),
+    q = require('q'),
     server = dns.createTCPServer(),
     getRecords = require('./getRecords');
 
@@ -16,38 +17,43 @@ server.on('request', function (request, response) {
   //Assertions about well-formed queries:
   if (request.header.qr == 0 &&
       request.header.opcode == 0) {
-    var resps = {};
-    var answers = 0;
+    var resps = [];
     request.question.forEach(function(question) {
       if ((question.type == 1 || question.type == 16 || question.type == 255) &&
           (question.class == 1 || question.class == 255)) {
-        resps[question.name] = getRecords(question.name);
+        resps.push(getRecords(question.name).then(function(name, answer) {
+          return answer.map(function(rcrd) {
+            return dns.TXT({
+              name: name,
+              data: rcrd,
+              ttl: 16000
+            });
+          });
+        }.bind({}, question.name)));
         if (argv.a && question.type != 16) {
-          resps.push(dns.A({
+          resps.push(q.resolve([dns.A({
             name: question.name,
             address: argv.a,
             ttl: 16000
-          }));
-          answers++;
+          })]));
         }
       }
     });
-    console.log(resps);
-    for (var key in resps)  {
-      if (resps.hasOwnProperty(key)) {
-        resps[key].forEach(function(resp) {
-          response.answer.push(dns.TXT({
-            name: key,
-            data: resp,
-            ttl: 16000
-          }));
-          answers++;
-        });
+
+    q.all(resps).then(function(response, answers) {
+      var count = 0;
+      answers.forEach(function (answer) {
+        if (answer) {
+          answer.forEach(function(rcrd) {
+            response.answer.push(rcrd);
+            count++;
+          });
+        }
+      });
+      if (count) {
+        response.send();
       }
-    }
-    if (answers) {
-      response.send();
-    }
+    }.bind({}, response));
   } else {
     // Ignore bad requests.
   }
