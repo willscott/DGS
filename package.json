@@ -1,5 +1,5 @@
 {
-  "name": "DGS",
+  "name": "dgs",
   "description": "The DNS Golden Standard: A DNS server aiming to return all acceptable IPs for a query",
   "version": "0.0.1",
   "homepage": "https://github.com/willscott/DGS",
