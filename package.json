@@ -1,6 +1,17 @@
 {
   "name": "DGS",
   "description": "The DNS Golden Standard: A DNS server aiming to return all acceptable IPs for a query",
+  "version": "0.0.1",
+  "homepage": "https://github.com/willscott/DGS",
+  "bugs": {
+    "url": "https://github.com/willscott/DGS/issues",
+    "email": "willscott@gmail.com"
+  }
+  "author": "Will Scott <willscott@gmail.com> (https://wills.co.tt/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/willscott/DGS"
+  },
   "dependencies": {
     "native-dns": "^0.6.1"
   }
