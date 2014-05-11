@@ -41,9 +41,9 @@ module.exports = function(name) {
   return q.all(promises).then(function(responses) {
     // Do all Agree?
     var agreement = true;
-    var curr = JSON.stringify(responses[0]);
+    var curr = JSON.stringify(responses[0].sort());
     for (var i = 1; i < responses.length; i++) {
-      var next = JSON.stringify(responses[i]);
+      var next = JSON.stringify(responses[i].sort());
       if (curr != next) {
         agreement = false;
         break;
